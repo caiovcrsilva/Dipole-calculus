@@ -66,8 +66,12 @@ For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--
   - The terminal outputs individual per-axis averages: $\langle A_x \rangle$, $\langle A_y \rangle$, $\langle A_z \rangle$ for each frame.
   - The generated `.cube` file saves the magnitude of the temporally averaged vector field $\sqrt{\langle A_x \rangle^2 + \langle A_y \rangle^2 + \langle A_z \rangle^2}$.
 
+  
+
 ### 3. `dot_product` (Radial Projection)
-- **Mathematical Definition**: $\vec{A} \cdot \hat{r}$, where $\hat{r} = \frac{\vec{r} - \vec{r}_{\text{center}}}{\|\vec{r} - \vec{r}_{\text{center}}\|}$ is the unit position vector pointing outward from the reference center of mass (e.g., protein center).
+- **Mathematical Definition**: 
+$$\vec{A} \cdot \hat{r} \quad \text{where} \quad \hat{r} = \frac{\vec{r} - \vec{r}_{\text{center}}}{\|\vec{r} - \vec{r}_{\text{center}}\|}$$
+is the unit position vector pointing outward from the reference center of mass (e.g., protein center).
 - **Physical Meaning**: Measures the projection of the vector field along the radial direction relative to the solute:
   - **Positive values ($> 0$)**: The vector points outward (away from the reference center).
   - **Negative values ($< 0$)**: The vector points inward (toward the reference center).
