@@ -53,7 +53,8 @@ Given the interpolated 3D dipole vector field $\vec{V}(x, y, z) = (V_x, V_y, V_z
 For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--mode` flag determines how the 3D vector $\vec{A} = (A_x, A_y, A_z)$ is processed, reported, and exported:
 
 ### 1. `magnitude` (Default)
-- **Mathematical Definition**: $\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$
+- **Mathematical Definition**: 
+$\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$
 - **Physical Meaning**: Quantifies the absolute intensity of the field at every grid voxel, regardless of its spatial orientation.
 - **Output**: 
   - The terminal prints the spatial mean magnitude for each trajectory frame.
