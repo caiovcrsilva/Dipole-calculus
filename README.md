@@ -1,6 +1,6 @@
 # Dipole calculus
 
-**`dipole_calculus`** is a modular Python package for calculating spatial differential properties — **Curl** ($\nabla \times \vec{p}$), **Divergence** ($\nabla \cdot \vec{p}$), **Gradient** ($\nabla \|\vec{p}\|$), and **Laplacian** ($\nabla^2 \vec{p}$) — of water electric dipoles across GROMACS molecular dynamics trajectories. It supports multi-core parallel execution, vector/scalar analysis modes, Gaussian `.cube` volumetric exports, and automatic VMD `.vmd` visualization script generation.
+**`dipole_calculus`** is a modular Python package for calculating spatial differential properties — **Curl** ($\nabla \times \vec{p}$), **Divergence** ($\nabla \cdot \vec{p}$), **Gradient** ($\nabla \|\vec{p}\|$), and **Laplacian** ($\nabla^2 \vec{p}$) — of solvent (Ex.: water) electric dipoles across GROMACS molecular dynamics trajectories. It supports multi-core parallel execution, vector/scalar analysis modes, Gaussian `.cube` volumetric exports, and automatic VMD `.vmd` visualization script generation.
 
 ---
 
