@@ -54,7 +54,8 @@ For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--
 
 ### 1. `magnitude` (Default)
 - **Mathematical Definition**:
-  $$\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$$
+
+  $\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$
 - **Physical Meaning**: Quantifies the absolute intensity of the field at every grid voxel, regardless of its spatial orientation.
 - **Output**: 
   - The terminal prints the spatial mean magnitude for each trajectory frame.
@@ -68,9 +69,11 @@ For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--
   - The generated `.cube` file saves the magnitude of the temporally averaged vector field $\sqrt{\langle A_x \rangle^2 + \langle A_y \rangle^2 + \langle A_z \rangle^2}$.
 
 ### 3. `dot_product` (Radial Projection)
-- **Mathematical Definition**: 
-  $$\vec{A} \cdot \hat{r} \quad \text{where} \quad \hat{r} = \frac{\vec{r} - \vec{r}_{\text{center}}}{\|\vec{r} - \vec{r}_{\text{center}}\|}$$
-  is the unit position vector pointing outward from the reference center of mass (e.g., protein center).
+- **Mathematical Definition**: $$\vec{A} \cdot \hat{r}$$,  where the radial unit vector $\hat{r}$ is defined as:
+
+  $\hat{r} = \frac{\vec{r} - \vec{r}_c}{\| \vec{r} - \vec{r}_c \|}$
+
+  This represents the unit position vector pointing outward from the reference center of mass ($vec{r}_c$).
 - **Physical Meaning**: Measures the projection of the vector field along the radial direction relative to the solute:
   - **Positive values ($> 0$)**: The vector points outward (away from the reference center).
   - **Negative values ($< 0$)**: The vector points inward (toward the reference center).
