@@ -53,8 +53,8 @@ Given the interpolated 3D dipole vector field $\vec{V}(x, y, z) = (V_x, V_y, V_z
 For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--mode` flag determines how the 3D vector $\vec{A} = (A_x, A_y, A_z)$ is processed, reported, and exported:
 
 ### 1. `magnitude` (Default)
-- **Mathematical Definition**: 
-$\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$
+- **Mathematical Definition**:
+  $$\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$$
 - **Physical Meaning**: Quantifies the absolute intensity of the field at every grid voxel, regardless of its spatial orientation.
 - **Output**: 
   - The terminal prints the spatial mean magnitude for each trajectory frame.
@@ -67,12 +67,10 @@ $\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$
   - The terminal outputs individual per-axis averages: $\langle A_x \rangle$, $\langle A_y \rangle$, $\langle A_z \rangle$ for each frame.
   - The generated `.cube` file saves the magnitude of the temporally averaged vector field $\sqrt{\langle A_x \rangle^2 + \langle A_y \rangle^2 + \langle A_z \rangle^2}$.
 
-  
-
 ### 3. `dot_product` (Radial Projection)
 - **Mathematical Definition**: 
-$$\vec{A} \cdot \hat{r} \quad \text{where} \quad \hat{r} = \frac{\vec{r} - \vec{r}_{\text{center}}}{\|\vec{r} - \vec{r}_{\text{center}}\|}$$
-is the unit position vector pointing outward from the reference center of mass (e.g., protein center).
+  $$\vec{A} \cdot \hat{r} \quad \text{where} \quad \hat{r} = \frac{\vec{r} - \vec{r}_{\text{center}}}{\|\vec{r} - \vec{r}_{\text{center}}\|}$$
+  is the unit position vector pointing outward from the reference center of mass (e.g., protein center).
 - **Physical Meaning**: Measures the projection of the vector field along the radial direction relative to the solute:
   - **Positive values ($> 0$)**: The vector points outward (away from the reference center).
   - **Negative values ($< 0$)**: The vector points inward (toward the reference center).
@@ -80,7 +78,6 @@ is the unit position vector pointing outward from the reference center of mass (
 - **Output**:
   - The terminal prints the frame-averaged scalar dot product.
   - The generated `.cube` file exports the 3D signed scalar field showing inward vs. outward orientation.
-
 > [!NOTE]
 > **Summary on Divergence vs Modes**: Since **divergence** is already an intrinsic scalar quantity ($\nabla \cdot \vec{V} \in \mathbb{R}$), the `--mode` flag does not apply to it. Divergence is always processed and exported as a signed scalar field where positive regions indicate dipole flux expansion and negative regions indicate convergence.
 
