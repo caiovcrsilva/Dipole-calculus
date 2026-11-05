@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dipole_calculus"
+version = "0.2.0"
+description = "Parallel calculation of differential properties (curl, divergence, gradient, laplacian) of water electric dipoles from GROMACS trajectories."
+readme = "README.md"
+license = { text = "MIT OR GPL-3.0-or-later" }
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.21.0",
+    "scipy>=1.7.0",
+    "MDAnalysis>=2.0.0",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+[project.scripts]
+dipole-calculus = "dipole_calculus.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
