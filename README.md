@@ -73,7 +73,7 @@ For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--
 
   $\hat{r} = \frac{\vec{r} - \vec{r}_c}{\| \vec{r} - \vec{r}_c \|}$
 
-  This represents the unit position vector pointing outward from the reference center of mass ($vec{r}_c$).
+  This represents the unit position vector pointing outward from the reference center of mass ($\vec{r}_c$).
 - **Physical Meaning**: Measures the projection of the vector field along the radial direction relative to the solute:
   - **Positive values ($> 0$)**: The vector points outward (away from the reference center).
   - **Negative values ($< 0$)**: The vector points inward (toward the reference center).
