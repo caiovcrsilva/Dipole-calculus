@@ -1,6 +1,6 @@
 # Dipole calculus
 
-**`dipole_calculus`** is a modular Python package for calculating spatial differential properties — **Curl** ($\nabla \times \vec{p}$), **Divergence** ($\nabla \cdot \vec{p}$), **Gradient** ($\nabla \|\vec{p}\|$), and **Laplacian** ($\nabla^2 \vec{p}$) — of solvent (Ex.: water) electric dipoles across GROMACS molecular dynamics trajectories. It supports multi-core parallel execution, vector/scalar analysis modes, Gaussian `.cube` volumetric exports, and automatic VMD `.vmd` visualization script generation.
+**`dipole_calculus`** is a modular Python package for calculating spatial differential properties — **Curl** ($\nabla \times \vec{p}$), **Divergence** ($\nabla \cdot \vec{p}$), **Gradient** ($\nabla \|\vec{p}\|$), and **Laplacian** ($\nabla^2 \vec{p}$) — of solvent (e.g., water) electric dipoles across GROMACS molecular dynamics trajectories. It supports multi-core parallel execution, vector/scalar analysis modes, Gaussian `.cube` volumetric exports, and automatic VMD `.vmd` visualization script generation.
 
 ---
 
@@ -12,6 +12,7 @@ dipole_calculus/
 ├── requirements.txt                # Runtime dependencies
 ├── README.md                       # Project documentation
 ├── main.py                         # Direct CLI runner script
+├── dipole_calculus_standalone.py   # Single-file standalone script (HPC-ready)
 └── src/
     └── dipole_calculus/
         ├── __init__.py             # Public package API
@@ -34,16 +35,41 @@ dipole_calculus/
 Given the interpolated 3D dipole vector field $\vec{V}(x, y, z) = (V_x, V_y, V_z)$:
 
 1. **`curl`** ($\nabla \times \vec{V}$) — *3D Vector Field*:
-   - Measures local rotational vorticity of the electric dipole field.
+   - Measures local rotational vorticity of the electric dipole field:
+
+$$
+\text{curl}_x = \frac{\partial V_z}{\partial y} - \frac{\partial V_y}{\partial z}, \quad
+\text{curl}_y = \frac{\partial V_x}{\partial z} - \frac{\partial V_z}{\partial x}, \quad
+\text{curl}_z = \frac{\partial V_y}{\partial x} - \frac{\partial V_x}{\partial y}
+$$
+
    - Supports `--mode magnitude`, `--mode vector`, and `--mode dot_product`.
+
 2. **`divergence`** ($\nabla \cdot \vec{V}$) — *3D Scalar Field*:
-   - Measures local dipole flux sources ($>0$) and sinks ($<0$).
-   - Inherently a scalar field; if `--mode` is passed, a non-blocking warning is displayed and standard scalar calculation proceeds.
+   - Measures net volumetric flux divergence: local sources of dipole expansion ($>0$) and sinks/convergence ($<0$):
+
+$$
+\text{div} = \nabla \cdot \vec{V} = \frac{\partial V_x}{\partial x} + \frac{\partial V_y}{\partial y} + \frac{\partial V_z}{\partial z}
+$$
+
+   - **Mode behavior**: Divergence is inherently a scalar quantity and has no directional components ($X, Y, Z$) to decompose or project. Therefore, `--mode` is **not needed**. If `--mode` is passed, a non-blocking terminal warning is displayed and standard scalar calculation proceeds automatically.
+
 3. **`gradient`** ($\nabla \|\vec{V}\|$) — *3D Vector Field*:
-   - Computes the spatial gradient of the dipole magnitude $V_{\text{mag}} = \sqrt{V_x^2 + V_y^2 + V_z^2}$.
+   - Computes the spatial variation vector of the local dipole magnitude $V_{\text{mag}}$:
+
+$$
+\text{grad}_i = \frac{\partial V_{\text{mag}}}{\partial x_i} \quad \text{where} \quad V_{\text{mag}} = \sqrt{V_x^2 + V_y^2 + V_z^2}
+$$
+
    - Supports `--mode magnitude`, `--mode vector`, and `--mode dot_product`.
+
 4. **`laplacian`** ($\nabla^2 \vec{V}$) — *3D Vector Field*:
-   - Computes the component-wise vector Laplacian $(\nabla^2 V_x, \nabla^2 V_y, \nabla^2 V_z)$.
+   - Computes the component-wise spatial diffusion/curvature vector:
+
+$$
+\nabla^2 V_i = \frac{\partial^2 V_i}{\partial x^2} + \frac{\partial^2 V_i}{\partial y^2} + \frac{\partial^2 V_i}{\partial z^2} \quad \text{for } i \in \{x, y, z\}
+$$
+
    - Supports `--mode magnitude`, `--mode vector`, and `--mode dot_product`.
 
 ---
@@ -55,25 +81,34 @@ For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--
 ### 1. `magnitude` (Default)
 - **Mathematical Definition**:
 
-  $\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}$
+$$
+\|\vec{A}\| = \sqrt{A_x^2 + A_y^2 + A_z^2}
+$$
+
 - **Physical Meaning**: Quantifies the absolute intensity of the field at every grid voxel, regardless of its spatial orientation.
 - **Output**: 
   - The terminal prints the spatial mean magnitude for each trajectory frame.
   - The generated `.cube` file contains a 3D scalar volume representing the temporal average of the field magnitude across the simulation box (ideal for isosurface visualization in VMD).
 
 ### 2. `vector`
-- **Mathematical Definition**: Preserves the full three-dimensional vector $\vec{A} = (A_x, A_y, A_z)$ at every grid point ($3 \times N_x \times N_y \times N_z$).
+- **Mathematical Definition**: Preserves the complete 3D vector $\vec{A} = (A_x, A_y, A_z)$ across every grid point ($3 \times N_x \times N_y \times N_z$).
 - **Physical Meaning**: Retains complete directional information and orientation. It allows you to verify whether the field possesses a preferential net polarization or alignment along a specific Cartesian axis ($X$, $Y$, or $Z$) across time.
 - **Output**:
   - The terminal outputs individual per-axis averages: $\langle A_x \rangle$, $\langle A_y \rangle$, $\langle A_z \rangle$ for each frame.
-  - The generated `.cube` file saves the magnitude of the temporally averaged vector field $\sqrt{\langle A_x \rangle^2 + \langle A_y \rangle^2 + \langle A_z \rangle^2}$.
+  - The generated `.cube` file saves the magnitude of the temporally averaged vector field:
+
+$$
+\|\langle \vec{A} \rangle\| = \sqrt{\langle A_x \rangle^2 + \langle A_y \rangle^2 + \langle A_z \rangle^2}
+$$
 
 ### 3. `dot_product` (Radial Projection)
-- **Mathematical Definition**: $$\vec{A} \cdot \hat{r}$$,  where the radial unit vector $\hat{r}$ is defined as:
+- **Mathematical Definition**: Radial scalar projection of the vector field $\vec{A}$ onto the radial unit vector $\hat{r}$:
 
-  $\hat{r} = \frac{\vec{r} - \vec{r}_c}{\| \vec{r} - \vec{r}_c \|}$
+$$
+\vec{A} \cdot \hat{r} \quad \text{where} \quad \hat{r} = \frac{\vec{r} - \vec{r}_c}{\| \vec{r} - \vec{r}_c \|}
+$$
 
-  This represents the unit position vector pointing outward from the reference center of mass ($\vec{r}_c$).
+  Here, $\vec{r}_c$ denotes the reference center of mass.
 - **Physical Meaning**: Measures the projection of the vector field along the radial direction relative to the solute:
   - **Positive values ($> 0$)**: The vector points outward (away from the reference center).
   - **Negative values ($< 0$)**: The vector points inward (toward the reference center).
@@ -81,9 +116,11 @@ For vector properties (**`curl`**, **`gradient`**, and **`laplacian`**), the `--
 - **Output**:
   - The terminal prints the frame-averaged scalar dot product.
   - The generated `.cube` file exports the 3D signed scalar field showing inward vs. outward orientation.
+
 > [!NOTE]
 > **Summary on Divergence vs Modes**: Since **divergence** is already an intrinsic scalar quantity ($\nabla \cdot \vec{V} \in \mathbb{R}$), the `--mode` flag does not apply to it. Divergence is always processed and exported as a signed scalar field where positive regions indicate dipole flux expansion and negative regions indicate convergence.
 
+---
 
 ## Installation
 
@@ -149,4 +186,3 @@ This project is dual-licensed under both the **MIT License** and the **GNU Gener
 - For the permissive terms, see [LICENSE-MIT](LICENSE-MIT).
 - For the copyleft terms, see [LICENSE-GPL](LICENSE-GPL).
 - For details on the dual-licensing structure, see [LICENSE](LICENSE).
-
